@@ -6,6 +6,10 @@
     padding: $base_padding * 1.75;
   }
 
+  &.popup-menu {
+    border-radius: $base_radius + $base_padding * 3 !important;
+  }
+
   .popup-menu-content {
     padding: $base_padding * 2 !important;
   }
@@ -119,7 +123,12 @@
 
     &:focus, &:hover, &.selected {
       color: $text !important;
-      background-color: $divider !important;
+      background-color: rgba($text, 0.1) !important;
+    }
+
+    &:active {
+      color: $text !important;
+      background-color: rgba($text, 0.2) !important;
     }
 
     > StIcon { -st-icon-style: symbolic; }
@@ -150,9 +159,6 @@
       @extend %caption_heading;
     }
   }
-}
-
-.quick-toggle-menu-container {
 }
 
 .quick-settings-system-item {
