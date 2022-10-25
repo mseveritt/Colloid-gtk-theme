@@ -17,6 +17,10 @@ dnd {
 
 .large-icons {
   -gtk-icon-size: 32px;
+
+  .aboutdialog & {
+    -gtk-icon-size: 128px;
+  }
 }
 
 spinner:disabled,
@@ -326,9 +330,9 @@ entry {
 
         image {
           color: rgba($e_color, 0.75);
-  
+
           &:hover, &:active { color: $e_color; }
-  
+
           &:disabled { color: rgba($e_color, 0.35); }
         }
       }
@@ -567,26 +571,39 @@ button {
     background-clip: padding-box;
     font-weight: inherit;
     padding: 0;
+    border: 1px solid $border;
+    background-clip: border-box;
 
     &:hover {
-      background-image: image(gtkalpha(currentColor, 0.03));
+      background-image: none;
+      @include button(hover);
     }
 
     &.keyboard-activating,
     &:active {
-      background-image: image(gtkalpha(currentColor, 0.08));
+      background-image: none;
+      @include button(active);
     }
 
     &:checked {
-      background-color: $fill;
-      background-image: image(gtkalpha(currentColor, 0.1));
+      background-image: none;
+      @include button(checked);
+      border-color: $primary;
 
-      &:hover { background-image: image(gtkalpha(currentColor, 0.13)); }
+      &:hover {
+        background-image: none;
+        @include button(checked-hover);
+      }
+
+      &:disabled { @include button(checked-disabled); }
+
 
       &.keyboard-activating,
-      &:active { background-image: image(gtkalpha(currentColor, 0.19)); }
+      &:active { background-image: none; }
 
-      &.has-open-popup { background-image: image(gtkalpha(currentColor, 0.13)); }
+      &.has-open-popup {
+        background-image: none;
+      }
     }
 
     &:drop(active) {
@@ -1113,14 +1130,14 @@ spinbutton {
       padding: 0;
       min-height: $small-size;
       border-radius: 0;
-  
+
       &:last-child {
         border-radius: 0 $corner-radius $corner-radius 0;
       }
-  
+
       &.up:dir(ltr),
       &.down:dir(rtl) { margin-left: 0; }
-  
+
       &.up:dir(rtl),
       &.down:dir(ltr) { margin-right: 0; }
     }
@@ -1502,6 +1519,7 @@ headerbar {
   entry,
   spinbutton,
   button,
+  menubutton,
   stackswitcher,
   separator:not(.sidebar) {
     margin-top: $space-size;
@@ -1510,7 +1528,10 @@ headerbar {
 
   menubutton > button,
   spinbutton > button,
-  splitbutton > button {
+  splitbutton > button,
+  splitbutton > menubutton,
+  .linked > menubutton,
+  entry > menubutton {
     margin-top: 0;
     margin-bottom: 0;
   }
@@ -1722,6 +1743,11 @@ treeview.view {
 
   &:hover, &:selected {
     border-radius: 0;
+  }
+
+  &:focus {
+    box-shadow: none;
+    outline: none;
   }
 
   &.separator {
@@ -2872,10 +2898,6 @@ columnview.view {
     margin: 0;
     transition: none;
 
-    &:not(:hover):not(:disabled):not(:checked):not(:indeterminate) {
-      background-color: $divider;
-    }
-
     &, &:hover, &:disabled, &:checked:hover, &:indeterminate:hover {
       box-shadow: none;
     }
@@ -2884,6 +2906,11 @@ columnview.view {
   &:hover, &:selected, &:focus {
     check, radio {
       box-shadow: none;
+
+      &:checked {
+        color: on($assets-color);
+        background-color: $assets-color;
+      }
     }
   }
 }
@@ -3792,6 +3819,18 @@ window.dialog.message { // Message Dialog styling
   }
 }
 
+// About dialog
+window.aboutdialog {
+  &.background.csd {
+    scrolledwindow.frame {
+      &, > viewport.view, > textview.view, > textview.view > text {
+        border-radius: $corner-radius;
+      }
+    }
+  }
+}
+
+
 /********************
  * AdwMessageDialog *
  ********************/
@@ -4147,7 +4186,7 @@ infobar {
       color: $text;
 
       button {
-        &, &.text-button:not(:disabled) { color: $primary; }
+        &.text-button:not(:disabled):not(.suggested-action):not(.destructive-action) { color: $primary; }
       }
     }
   }
