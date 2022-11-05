@@ -1,5 +1,32 @@
 // generic drawing of more complex things
 
+//
+// Ripple keyframes
+//
+
+@keyframes ripple {
+  to {
+    background-size: 1000% 1000%;
+  }
+}
+
+@keyframes ripple-on-slider {
+  to {
+    background-size: auto, 1000% 1000%;
+  }
+}
+
+@keyframes ripple-on-headerbar {
+  from {
+    background-image: radial-gradient(circle, $primary 0%, transparent 0%);
+  }
+
+  to {
+    background-image: radial-gradient(circle, $primary 100%, transparent 100%);
+  }
+}
+
+
 @mixin entry($t, $fc: $primary) {
 //
 // entry
@@ -9,32 +36,43 @@
 //
 
   @if $t == normal {
-    transition: $transition, box-shadow $ripple-fade-out-duration $ease-out;
+    transition: $transition,
+                outline $ripple-fade-out-duration $ease-out,
+                box-shadow $ripple-fade-out-duration $ease-out;
     box-shadow: inset 0 0 0 2px transparent;
     background-color: if($fc == $primary, $entry, rgba($fc, 0.1));
     color: if($fc == $primary, $text-secondary, rgba($fc, 0.75));
-    outline: none;
+    outline: 0 solid transparent;
+    outline-offset: 2px;
   }
 
   @if $t == hover {
+    transition: $transition,
+                box-shadow $ripple-fade-out-duration $ease-out;
     background-color: $overlay-hover;
     box-shadow: inset 0 0 0 2px $overlay-hover;
     color: if($fc == $primary, $text, $fc);
-    outline: none;
+    outline: 0 solid transparent;
+    outline-offset: 2px;
   }
 
   @if $t == focus {
     background-color: $overlay-focus;
-    box-shadow: inset 0 0 0 2px if($fc == $primary, $track, $fc);
+    box-shadow: inset 0 0 0 2px transparent;
     color: if($fc == $primary, $text, $fc);
-    outline: none;
+    outline: 2px solid if($fc == $primary, $track, $fc);
+    outline-offset: -2px;
   }
 
   @if $t == checked {
+    transition: $transition,
+                outline $ripple-fade-out-duration $ease-out,
+                box-shadow $ripple-fade-out-duration $ease-out;
     background-color: if($fc == $primary, $entry, rgba($fc, 0.1));
-    box-shadow: inset 0 0 0 2px if($fc == $primary, $primary, $fc);
+    box-shadow: inset 0 0 0 2px transparent;
     color: if($fc == $primary, $text, $fc);
-    outline: none;
+    outline: 2px solid if($fc == $primary, $primary, $fc);
+    outline-offset: -2px;
   }
 
   @if $t == disabled {
@@ -78,32 +116,47 @@
 
   @if $t == normal {
     transition: $transition,
-                background-color $ripple-fade-in-duration $ease-out;
-    outline: none;
+                background-size $ripple-fade-out-duration $ease-out,
+                background-image $ripple-fade-out-opacity-duration $ease-out,
+                outline $ripple-fade-out-duration $ease-out;
     background-color: $button;
+    background-image: radial-gradient(circle, transparent 10%, transparent 0%);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 1000% 1000%;
+    outline: 0 solid transparent;
+    outline-offset: 2px;
     color: $text;
   }
 
   @if $t == hover {
     background-color: $overlay-hover;
     color: $text;
+    outline: 0 solid transparent;
   }
 
   @if $t == focus {
-    box-shadow: 0 0 0 2px rgba($primary, 0.35);
+    outline: 2px solid rgba($primary, 0.35);
+    outline-offset: 0;
   }
 
   @if $t == active {
     transition: $transition,
-                background-color $ripple-fade-in-duration $ease-out;
-    background-color: $overlay-active;
+                background-size 0ms,
+                background-image 0ms,
+                border 0ms;
+    animation: ripple $ripple-fade-in-duration $ease-out forwards;
+    background-image: radial-gradient(circle, $overlay-hover 10%, transparent 0%);
+    background-size: 0% 0%;
+    background-color: $overlay-hover;
     color: $text;
+    outline: 0 solid transparent;
   }
 
   @if $t == disabled {
-    box-shadow: none;
     background-color: $fill;
     color: $text-disabled;
+    outline-color: transparent;
   }
 
   @if $t == checked {
@@ -112,41 +165,54 @@
   }
 
   @if $t == checked-hover {
-    box-shadow: none;
+    outline-color: transparent;
+    background-color: lighten($primary, 5%);
+    color: on($primary);
   }
 
   @if $t == checked-disabled {
-    box-shadow: none;
+    outline-color: transparent;
     background-color: rgba($primary, 0.35);
     color: on($primary, disabled);
   }
 
   @if $t == flat-normal {
     transition: $transition,
-                background-color $ripple-fade-in-duration $ease-out;
-    outline: none;
+                border-image $ripple-fade-in-duration $ease-out,
+                background-size $ripple-fade-out-duration $ease-out,
+                background-image $ripple-fade-out-opacity-duration $ease-out,
+                outline $ripple-fade-out-duration $ease-out;
+    background-image: radial-gradient(circle, transparent 10%, transparent 0%);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 1000% 1000%;
     background-color: transparent;
+    outline: 0 solid transparent;
+    outline-offset: 2px;
     color: $text-secondary;
   }
 
   @if $t == flat-hover {
     background-color: $overlay-hover;
     color: $text;
-    box-shadow: none;
   }
 
   @if $t == flat-focus {
-    background-color: transparent;
     color: $text;
-    box-shadow: inset 0 0 0 2px $fill;
+    outline: 2px solid $fill;
+    outline-offset: -2px;
   }
 
   @if $t == flat-active {
     transition: $transition,
-                background-color $ripple-fade-in-duration $ease-out;
-    background-color: $overlay-active;
+                border-image $ripple-fade-in-duration $ease-out,
+                background-size 0ms,
+                background-image 0ms;
+    animation: ripple $ripple-fade-in-duration $ease-out forwards;
+    background-image: radial-gradient(circle, $overlay-hover 10%, transparent 0%);
+    background-size: 0% 0%;
+    background-color: $overlay-hover;
     color: $text;
-    box-shadow: none;
   }
 
   @if $t == flat-disabled {
@@ -157,7 +223,6 @@
   @if $t == flat-checked {
     background-color: $overlay-checked;
     color: $text;
-    box-shadow: none;
   }
 
   @if $t == flat-checked-disabled {
