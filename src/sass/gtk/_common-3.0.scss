@@ -997,7 +997,7 @@ toolbar {
   @at-root %toolbar_osd, &.osd {
     transition: $transition-shadow;
     padding: $space-size;
-    border-radius: $corner-radius;
+    border-radius: $window-radius;
     box-shadow: $shadow-z4, inset 0 1px highlight($surface);
     background-color: $surface;
 
@@ -1907,15 +1907,14 @@ popover.background {
 }
 
 notebook {
+  background-color: $base;
+
   frame > paned > & > header,
   &.frame > header { background-color: $fill; }
 
-  &, &.frame {
-    background-color: $base;
-    border-radius: $modal-radius + $space-size;
-  }
-
   &.frame {
+    border-radius: $modal-radius + $space-size;
+
     scrolledwindow.frame {
       border: none;
     }
@@ -3025,6 +3024,8 @@ row {
 
     &.text-button:not(:disabled) { color: $primary; }
   }
+
+  > box > label { margin-left: $space-size * 1.5; }
 
   &.frame,
   border { border-style: none; }
